@@ -1,1 +1,4 @@
+# Jetbrains
 .idea
+# MacOS
+.DS_Store
