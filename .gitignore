@@ -2,3 +2,5 @@
 .idea
 # MacOS
 .DS_Store
+# Grafana manually installed plugins
+config_files/grafana/var/lib/grafana/plugins
