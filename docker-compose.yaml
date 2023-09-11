@@ -43,9 +43,10 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - grafana_data:/var/lib/grafana
+      #- grafana_data:/var/lib/grafana
+      - ./config_files/grafana/etc/grafana/provisioning/datasources/:/etc/grafana/provisioning/datasources/
       # uncomment the following line, if you don't have access to grafana.com plugins and download a plugin manually (read README.md file)
-      # - ./config_files/grafana/var/lib/grafana/plugins/:/var/lib/grafana/plugins/  
+      # - ./config_files/grafana/var/lib/grafana/plugins/:/var/lib/grafana/plugins/
     depends_on:
       - prometheus
     
