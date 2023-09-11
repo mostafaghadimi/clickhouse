@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   clickhouse:
     container_name: clickhouse
@@ -43,6 +44,8 @@ services:
       - 3000:3000
     volumes:
       - grafana_data:/var/lib/grafana
+      # uncomment the following line, if you don't have access to grafana.com plugins and download a plugin manually (read README.md file)
+      # - ./config_files/grafana/var/lib/grafana/plugins/:/var/lib/grafana/plugins/  
     depends_on:
       - prometheus
     
@@ -51,4 +54,3 @@ volumes:
   clickhouse-logs:
   prometheus_data:
   grafana_data:
-
