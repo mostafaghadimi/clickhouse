@@ -1,0 +1,12 @@
+<clickhouse>
+  <logger>
+    <level>trace</level>
+    <!-- The following format does not work and asked in the Clickhouse's Slack -->
+    <log>/var/log/clickhouse-server/clickhouse-server-%A-%F-%T.log</log>
+    <errorlog>/var/log/clickhouse-server/clickhouse-server-%F-%T.err.log</errorlog>
+    <!-- end comment -->
+    <size>1000M</size>
+    <count>10</count>
+    <stream_compress>false</stream_compress>
+  </logger>
+</clickhouse>
