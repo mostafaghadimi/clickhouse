@@ -1,0 +1,13 @@
+<bi_quota>
+    <interval>
+        <duration>3600</duration>
+        <queries>1000</queries>
+        <query_selects>100</query_selects>
+        <!-- TODO:// set it to zero (means without insert not unlimited) -->
+        <query_inserts>1</query_inserts>  
+        <errors>100</errors>
+        <result_rows>1000000000</result_rows>
+        <read_rows>100000000000</read_rows>
+        <execution_time>900</execution_time>
+    </interval>
+</bi_quota>
