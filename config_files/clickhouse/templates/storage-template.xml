@@ -1,0 +1,33 @@
+<clickhouse>
+    <storage_configuration>
+        <disks>
+            <minio>
+                <type>s3</type>
+                <endpoint>http://minio:9002/$MINIO_CLICKHOUSE_BACKUP_BUCKET//</endpoint>
+                <access_key_id>$MINIO_ACCESS_KEY_ID</access_key_id>
+                <secret_access_key>$MINIO_SECRET_ACCESS_KEY</secret_access_key>
+                <region></region>
+                <metadata_path>/var/lib/clickhouse/disks/s3/</metadata_path>
+            </minio>
+            <s3_cache>
+                <type>cache</type>
+                <disk>minio</disk>
+                <path>/var/lib/clickhouse/disks/s3_cache/</path>
+                <max_size>50Gi</max_size>
+            </s3_cache>
+        </disks>
+        <policies>
+            <s3>
+                <volumes>
+                    <main>
+                        <disk>minio</disk>
+                    </main>
+                </volumes>
+            </s3>
+        </policies>
+    </storage_configuration>
+
+    <backups>
+        <allowed_disk>minio</allowed_disk>
+    </backups>
+</clickhouse>
