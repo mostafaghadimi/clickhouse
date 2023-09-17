@@ -6,3 +6,5 @@
 config_files/grafana/var/lib/grafana/plugins
 # Environment variables
 .env
+# Clickhouse storage manifest
+config_files/clickhouse/etc/clickhouse-server/config.d/storage.xml
