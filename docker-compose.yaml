@@ -21,6 +21,9 @@ services:
       nofile:
         soft: 262144
         hard: 262144
+    depends_on:
+      - minio
+      - minio-bucket-creator
 
   prometheus:
     container_name: prometheus
@@ -64,6 +67,21 @@ services:
     volumes:
       - minio_data:/var/lib/minio/data
     command: minio server /var/lib/minio/data --address 0.0.0.0:9002 --console-address ":9001"
+
+  minio-bucket-creator:
+    container_name: minio-bucket-creator
+    image: minio/mc:RELEASE.2023-09-13T23-08-58Z
+    env_file:
+      - .env
+    entrypoint: >
+      /bin/bash -c "
+      /usr/bin/mc alias set myminio http://minio:9002 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD;
+      /usr/bin/mc mb myminio/${MINIO_CLICKHOUSE_BACKUP_BUCKET:-clickhouse};
+      /usr/bin/mc anonymous set public myminio/${MINIO_CLICKHOUSE_BACKUP_BUCKET:-clickhouse};
+      exit 0;
+      "
+    depends_on:
+      - minio
 
 volumes:
   clickhouse-data:
