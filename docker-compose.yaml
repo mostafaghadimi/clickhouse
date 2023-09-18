@@ -39,6 +39,10 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+    depends_on:
+      - minio-prometheus-monitoring-cluster
+      - minio-prometheus-monitoring-node
+      - minio-prometheus-monitoring-bucket
 
   grafana:
     container_name: grafana
@@ -79,6 +83,51 @@ services:
       /usr/bin/mc mb myminio/${MINIO_CLICKHOUSE_BACKUP_BUCKET:-clickhouse};
       /usr/bin/mc anonymous set public myminio/${MINIO_CLICKHOUSE_BACKUP_BUCKET:-clickhouse};
       exit 0;
+      "
+    depends_on:
+      - minio
+  
+  minio-prometheus-monitoring-cluster:
+    container_name: minio-prometheus-monitoring-cluster
+    image: minio/mc:RELEASE.2023-09-13T23-08-58Z
+    env_file:
+      - .env
+    volumes:
+      - ./config_files/prometheus/prometheus.yaml:/home/prometheus.yaml
+    entrypoint: >
+      /bin/bash -c "
+      /usr/bin/mc alias set myminio http://minio:9002 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD > /dev/null;
+      /usr/bin/mc admin prometheus generate myminio cluster | sed '1d' | awk '{print \"  \" $0}' >> /home/prometheus.yaml;
+      "
+    depends_on:
+      - minio
+  
+  minio-prometheus-monitoring-node:
+    container_name: minio-prometheus-monitoring-node
+    image: minio/mc:RELEASE.2023-09-13T23-08-58Z
+    env_file:
+      - .env
+    volumes:
+      - ./config_files/prometheus/prometheus.yaml:/home/prometheus.yaml
+    entrypoint: >
+      /bin/bash -c "
+      /usr/bin/mc alias set myminio http://minio:9002 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD > /dev/null;
+      /usr/bin/mc admin prometheus generate myminio node | sed '1d' | awk '{print \"  \" $0}' >> /home/prometheus.yaml;
+      "
+    depends_on:
+      - minio
+
+  minio-prometheus-monitoring-bucket:
+    container_name: minio-prometheus-monitoring-bucket
+    image: minio/mc:RELEASE.2023-09-13T23-08-58Z
+    env_file:
+      - .env
+    volumes:
+      - ./config_files/prometheus/prometheus.yaml:/home/prometheus.yaml
+    entrypoint: >
+      /bin/bash -c "
+      /usr/bin/mc alias set myminio http://minio:9002 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD > /dev/null;
+      /usr/bin/mc admin prometheus generate myminio bucket | sed '1d' | awk '{print \"  \" $0}' >> /home/prometheus.yaml;
       "
     depends_on:
       - minio
